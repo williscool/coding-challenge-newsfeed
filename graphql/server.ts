@@ -10,6 +10,12 @@ const typeDefs = gql`
     users: [User!]!
   }
 
+  type FeedItem {
+    entity_id: Int!
+    entity_type: String!
+    fellowship: String!
+  }
+
   type User {
     id: Int!
     name: String!
@@ -22,7 +28,13 @@ const typeDefs = gql`
   type Query {
     project(id: Int!): Project!
     user(id: Int!): User!
+    feed(offset: Int!): [FeedItem!]!
   }
 `;
 
-export const server = new ApolloServer({typeDefs, resolvers})
+export const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  introspection: true,
+  playground: true,
+  });

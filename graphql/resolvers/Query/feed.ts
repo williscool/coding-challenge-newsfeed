@@ -1,4 +1,4 @@
-import db, {FeedRow} from '../../db'
+import db, {FeedItemsRow} from '../../db'
 
 const LIMIT = 10;
 
@@ -6,8 +6,8 @@ type Args = {
   offset: number;
 }
 
-export default async function feed(parent: unknown, {offset = 0}: Args): Promise<FeedRow[]> {
-  const feed: FeedRow[] | undefined = await db.getAll(
+export default async function feed(parent: unknown, {offset = 0}: Args): Promise<FeedItemsRow[]> {
+  const feed_items: FeedItemsRow[] | undefined = await db.getAll(
     `SELECT id as entity_id, "announcement" as entity_type, fellowship, created_ts FROM announcements 
     UNION ALL
     SELECT id as entity_id, "user" as entity_type, fellowship, created_ts FROM users
@@ -19,5 +19,5 @@ export default async function feed(parent: unknown, {offset = 0}: Args): Promise
   if (!feed) {
     throw new Error(`feed at ${offset} not found!`)
   }
-  return feed;
+  return feed_items;
 }

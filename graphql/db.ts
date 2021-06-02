@@ -40,7 +40,7 @@ export type UserRow = {
 }
 
 
-export type FeedRow = {
+export type FeedItemsRow = {
   entity_id: number;
   entity_type: "announcement" | "project" | "user";
   fellowship: "founders" | "angels" | "writers" | "angels-founders";
