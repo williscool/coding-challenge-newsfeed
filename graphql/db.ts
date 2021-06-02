@@ -39,6 +39,14 @@ export type UserRow = {
   updated_ts: Date;
 }
 
+
+export type FeedRow = {
+  entity_id: number;
+  entity_type: "announcement" | "project" | "user";
+  fellowship: "founders" | "angels" | "writers" | "angels-founders";
+  created_ts: Date;
+}
+
 export type ProjectRow = {
   id: number;
   name: string;
