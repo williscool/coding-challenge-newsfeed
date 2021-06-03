@@ -2,7 +2,9 @@ import { useState } from 'react';
 import Card from './Card'
 import UserCard from 'components/UserCard'
 import ProjectCard from 'components/ProjectCard'
-import {useQuery, gql, resetCaches, NetworkStatus } from '@apollo/client'
+import AnnouncementCard from 'components/AnnouncementCard'
+
+import {useQuery, gql, NetworkStatus } from '@apollo/client'
 import {User, Project, Announcement} from '../types'
 
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -180,6 +182,10 @@ export default function Feed() {
 
             if(feedItem.entity_type === "project"){
               retComp = <ProjectCard project={feedItem.item as Project} />
+            }
+
+            if(feedItem.entity_type === "announcement"){
+              retComp = <AnnouncementCard announcement={feedItem.item as Announcement} />
             }
 
             return retComp;
