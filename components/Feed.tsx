@@ -3,6 +3,10 @@ import Card from './Card'
 import {useQuery, gql} from '@apollo/client'
 
 import InfiniteScroll from "react-infinite-scroll-component";
+import Loader from 'react-loader';
+
+import Skeleton from 'react-loading-skeleton';
+
 
 const FEED_QUERY = gql`
   query feed($offset: Int, $limit: Int) {
@@ -55,6 +59,28 @@ type feedStateType = {
   hasMore: boolean
 }
 
+const loaderOptions = {
+  lines: 13,
+  length: 20,
+  width: 10,
+  radius: 30,
+  scale: 1.00,
+  corners: 1,
+  color: '#000',
+  opacity: 0.25,
+  rotate: 0,
+  direction: 1,
+  speed: 1,
+  trail: 60,
+  fps: 20,
+  zIndex: 2e9,
+  bottom: '0',
+  right: '0',
+  shadow: false,
+  hwaccel: false,
+  position: 'fixed'
+};
+
 export default function Feed() {
 
   const [feedState, setFeedState] = useState<feedStateType>({offset:0, hasMore: true});
@@ -67,10 +93,9 @@ export default function Feed() {
   const feed = data?.feed;
 
   if (!feed || loading || error) {
-    return null
+    return <Skeleton count={7} height={200} />
   }
 
-  debugger
   return (
     <>
       {
@@ -96,7 +121,7 @@ export default function Feed() {
             </p>
           }
           hasMore={hasMore}
-          loader={<h4>Loading...</h4>}
+          loader={<Loader loaded={false} options={loaderOptions} className="spinner" />}
           >
           {feed.map((feedItem) => {
             const key = `offset-${offset}-${feedItem.entity_id}-${feedItem.entity_type}`;

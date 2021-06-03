@@ -26,7 +26,7 @@ export default function UserCard({user}: Props) {
             <>
               <h3>Projects:</h3>
               {user.projects.map(p => (
-                <Project key={p.id} project={p} />
+                <ProjectCard key={p.id} project={p} />
               ))}
             </>
           )}
@@ -64,7 +64,7 @@ const ColumnRight = styled.div`
   flex-basis: 14rem;
 `
 
-function Project({project}: {project: Project}) {
+function ProjectCard({project}: {project: Project}) {
   return (
     <ProjectContainer>
       <ProjectColumnLeft>
