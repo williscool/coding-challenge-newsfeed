@@ -17,6 +17,7 @@
     "next": "10.0.7",
     "react": "17.0.1",
     "react-dom": "17.0.1",
+    "react-hook-form": "^7.7.1",
     "react-infinite-scroll-component": "^6.1.0",
     "react-loader": "^2.4.7",
     "react-loading-skeleton": "^2.2.0",

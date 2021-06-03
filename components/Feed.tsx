@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { LegacyRef, useState } from 'react';
 import Card from './Card'
 import {useQuery, gql} from '@apollo/client'
 
@@ -6,7 +6,14 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import Loader from 'react-loader';
 
 import Skeleton from 'react-loading-skeleton';
+import { useForm } from 'react-hook-form';
 
+const ADMIN_USER = 'admin';
+const ANGEL_USER = 'angel';
+const WRITER_USER = 'writer';
+const FOUNDER_USER = 'founder';
+
+const USER_TYPES = [ADMIN_USER, ANGEL_USER, WRITER_USER, FOUNDER_USER];
 
 const FEED_QUERY = gql`
   query feed($offset: Int, $limit: Int) {
@@ -81,9 +88,12 @@ const loaderOptions = {
   position: 'fixed'
 };
 
+
 export default function Feed() {
 
+  const { handleSubmit, register } = useForm();
   const [feedState, setFeedState] = useState<feedStateType>({offset:0, hasMore: true});
+  const [selectedFeedUserType, setSelectedFeedUserType] = useState(ADMIN_USER);
 
   const {offset, hasMore} = feedState;
 
@@ -98,7 +108,20 @@ export default function Feed() {
 
   return (
     <>
-      {
+        <form onSubmit={handleSubmit((data) => console.log(data))}>
+          <label>
+            Simulate feed for user type: 
+            <select {...register('userType')} value={selectedFeedUserType} onChange={(e) =>  setSelectedFeedUserType(e.target.value)} >
+              {USER_TYPES.map((uType) => {
+                return <option value={uType} key={uType}>
+                        {uType}
+                      </option>
+              })}
+            </select>
+          </label>
+
+          <input type="submit" value="Submit" />
+        </form>
         <InfiniteScroll
           dataLength={feed.length}
           next={()=>
@@ -130,7 +153,6 @@ export default function Feed() {
                   </Card>
           })}
         </InfiniteScroll>
-      }
     </>
   )
 }
