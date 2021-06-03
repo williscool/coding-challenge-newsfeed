@@ -17,6 +17,7 @@
     "next": "10.0.7",
     "react": "17.0.1",
     "react-dom": "17.0.1",
+    "react-infinite-scroll-component": "^6.1.0",
     "sqlite3": "^5.0.2",
     "styled-components": "^5.2.1"
   },

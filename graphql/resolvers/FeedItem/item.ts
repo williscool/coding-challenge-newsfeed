@@ -8,6 +8,9 @@ import {user, project, announcement} from "../Query"
 
 // then drop down to show diff users types
 
+
+// then we shouwl all the parts of the feed items in the ui
+
 // https://stackoverflow.com/a/48241313/511710
 
 type Item =  UserRow | ProjectRow | AnnouncementRow | null

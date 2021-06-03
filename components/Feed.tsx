@@ -1,5 +1,10 @@
+import { useState } from 'react';
 import Card from './Card'
 import {useQuery, gql} from '@apollo/client'
+
+import InfiniteScroll from "react-infinite-scroll-component";
+
+const OFFSET_INCREMENT = 10;
 
 const FEED_QUERY = gql`
   query feed($offset: Int!) {
@@ -47,12 +52,21 @@ type FeedItem = {
   created_ts: Date;
 }
 
+type feedStateType = {
+  offset: number
+  allItems: FeedItem[]
+}
+
 export default function Feed() {
 
-  const {data, error, loading} = useQuery<QueryData, QueryVars>(
+  const [feedState, setFeedState] = useState<feedStateType>({offset:0, allItems: [] });
+
+  const {offset, allItems} = feedState;
+
+  const {data, error, loading, fetchMore} = useQuery<QueryData, QueryVars>(
     FEED_QUERY,
     {
-      variables: {offset: 0},
+      variables: {offset},
     }
   )
   const feed = data?.feed;
@@ -61,14 +75,40 @@ export default function Feed() {
     return null
   }
 
-
+  allItems.concat(feed);
 
   return (
     <>
       {feed.map(p => (
-        <Card key={`${p.entity_id}-${p.entity_type}`}>
-          <p key={`${p.entity_id}-${p.entity_type}`}> {p.entity_type} </p>
-        </Card>
+        <InfiniteScroll
+          dataLength={allItems.length}
+          next={()=>{
+
+              fetchMore({
+                variables: {
+                  offset
+                },
+              })
+
+              setFeedState({offset: offset + OFFSET_INCREMENT, allItems})
+            } 
+          }
+          endMessage={
+            <p style={{ textAlign: 'center' }}>
+              <b>Yay! You have seen it all</b>
+            </p>
+          }
+          hasMore={feed.length === 0}
+          loader={<h4>Loading...</h4>}
+          >
+          {feed.map((feedItem) => (
+
+            <Card key={`${feedItem.entity_id}-${feedItem.entity_type}`}>
+              <p> {feedItem.entity_type} </p>
+            </Card>
+
+          ))}
+        </InfiniteScroll>
       ))}
     </>
   )
