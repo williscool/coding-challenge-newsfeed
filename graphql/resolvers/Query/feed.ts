@@ -6,6 +6,8 @@ type Args = {
   offset: number;
 }
 
+// https://www.apollographql.com/docs/apollo-server/schema/unions-interfaces/
+
 export default async function feed(parent: unknown, {offset = 0}: Args): Promise<FeedItemsRow[]> {
   const feed_items: FeedItemsRow[] | undefined = await db.getAll(
     `SELECT id as entity_id, "announcement" as entity_type, fellowship, created_ts FROM announcements 

@@ -7,6 +7,27 @@ const FEED_QUERY = gql`
       entity_id
       entity_type
       fellowship
+      item {
+        ... on Announcement{
+          title
+          body
+          fellowship
+        }
+        ... on Project{
+          name
+          description
+          icon_url
+          users {
+            name
+          }
+        }
+        ... on User{
+          name
+          bio
+          fellowship
+          avatar_url
+        }
+      }
     }
   }
 `;

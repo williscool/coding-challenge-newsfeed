@@ -2,6 +2,8 @@ import {useRouter} from 'next/router'
 import {useQuery, gql} from '@apollo/client'
 import Layout from 'components/Layout'
 import ProjectCard from 'components/ProjectCard'
+import {User, Project} from '../../types'
+
 
 const PROJECT_QUERY = gql`
   query project($id: Int!) {
@@ -27,19 +29,6 @@ type QueryVars = {
   id: number;
 }
 
-type Project = {
-  id: number;
-  name: string;
-  description: string;
-  icon_url: string;
-  users: User[];
-}
-
-type User = {
-  id: number;
-  name: string;
-  avatar_url: string;
-}
 
 export default function ProjectPage() {
   const {query} = useRouter()

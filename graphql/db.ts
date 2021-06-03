@@ -34,6 +34,7 @@ export type UserRow = {
   name: string;
   bio: string;
   avatar_url: string;
+  entity_type: "user"
   fellowship: "founders" | "angels" | "writers";
   created_ts: Date;
   updated_ts: Date;
@@ -50,6 +51,7 @@ export type FeedItemsRow = {
 export type ProjectRow = {
   id: number;
   name: string;
+  entity_type: "project"
   description: string;
   icon_url: string;
   created_ts: Date;
@@ -63,6 +65,7 @@ export type UserProjectRow = {
 
 export type AnnouncementRow = {
   id: number;
+  entity_type: "announcement"
   fellowship: "founders" | "angels" | "writers" | "all";
   title: string;
   body: string;
