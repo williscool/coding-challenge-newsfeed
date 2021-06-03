@@ -65,6 +65,7 @@ type FeedItem = {
 type feedStateType = {
   offset: number
   hasMore: boolean
+  currentFeedUserType: string
 }
 
 const loaderOptions = {
@@ -93,11 +94,10 @@ const loaderOptions = {
 export default function Feed() {
 
   const { handleSubmit, register } = useForm();
-  const [feedState, setFeedState] = useState<feedStateType>({offset:0, hasMore: true});
+  const [feedState, setFeedState] = useState<feedStateType>({offset:0, hasMore: true, currentFeedUserType: ADMIN_USER});
   const [selectedFeedUserType, setSelectedFeedUserType] = useState(ADMIN_USER);
-  const [currentFeedUserType, setCurrentFeedUserType] = useState(ADMIN_USER);
 
-  const {offset, hasMore} = feedState;
+  const {offset, hasMore, currentFeedUserType} = feedState;
 
   const {data, error, loading, refetch, fetchMore, networkStatus} = useQuery<QueryData, QueryVars>(
     FEED_QUERY, {variables: {offset, userType: currentFeedUserType}, fetchPolicy: 'cache-and-network' }
@@ -120,7 +120,7 @@ export default function Feed() {
           }).then(() => {
             // NOTE: you would want to add the feed type to the data model irl ... this just updates it for subsequet queires
             // it causese an uncessary extra render
-            setCurrentFeedUserType(data.userType)
+            setFeedState({offset: 0, hasMore: true, currentFeedUserType: data.userType })
           })
         })}>
           <label>
@@ -149,7 +149,7 @@ export default function Feed() {
               .then((fetchMoreResult) =>{
                 console.log(fetchMoreResult)
                 // https://www.apollographql.com/docs/react/pagination/offset-based/#using-with-a-paginated-read-function
-                setFeedState({offset: offset + fetchMoreResult.data.feed.length, hasMore: fetchMoreResult.data.feed.length !== 0 })
+                setFeedState({offset: offset + fetchMoreResult.data.feed.length, hasMore: fetchMoreResult.data.feed.length !== 0 , currentFeedUserType})
               })
           }
           endMessage={
