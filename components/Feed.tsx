@@ -1,6 +1,6 @@
-import { LegacyRef, useState } from 'react';
+import { useState } from 'react';
 import Card from './Card'
-import {useQuery, gql} from '@apollo/client'
+import {useQuery, gql, resetCaches, NetworkStatus } from '@apollo/client'
 
 import InfiniteScroll from "react-infinite-scroll-component";
 import Loader from 'react-loader';
@@ -16,8 +16,8 @@ const FOUNDER_USER = 'founder';
 const USER_TYPES = [ADMIN_USER, ANGEL_USER, WRITER_USER, FOUNDER_USER];
 
 const FEED_QUERY = gql`
-  query feed($offset: Int, $limit: Int) {
-    feed(offset: $offset, limit: $limit) {
+  query feed($offset: Int, $limit: Int, $userType: String) {
+    feed(offset: $offset, limit: $limit, userType: $userType) {
       entity_id
       entity_type
       fellowship
@@ -52,6 +52,7 @@ type QueryData = {
 
 type QueryVars = {
   offset: number;
+  userType: string;
 }
 
 type FeedItem = {
@@ -94,21 +95,33 @@ export default function Feed() {
   const { handleSubmit, register } = useForm();
   const [feedState, setFeedState] = useState<feedStateType>({offset:0, hasMore: true});
   const [selectedFeedUserType, setSelectedFeedUserType] = useState(ADMIN_USER);
+  const [currentFeedUserType, setCurrentFeedUserType] = useState(ADMIN_USER);
 
   const {offset, hasMore} = feedState;
 
-  const {data, error, loading, fetchMore} = useQuery<QueryData, QueryVars>(
-    FEED_QUERY,
+  const {data, error, loading, refetch, fetchMore, networkStatus} = useQuery<QueryData, QueryVars>(
+    FEED_QUERY, {variables: {offset, userType: currentFeedUserType}, }
   )
   const feed = data?.feed;
 
-  if (!feed || loading || error) {
+  if (!feed || loading || error || networkStatus === NetworkStatus.refetch) {
     return <Skeleton count={7} height={200} />
   }
 
+  debugger
   return (
     <>
-        <form onSubmit={handleSubmit((data) => console.log(data))}>
+        <form onSubmit={handleSubmit((data) => {
+          console.log(data)                                                          
+          debugger
+          resetCaches()
+          refetch({ 
+              userType: data.userType,
+              offset: data.length // feed length updated from apollo cache. offset state just used for uniq keys now
+          }).then(() => {
+            setCurrentFeedUserType(data.userType)
+          })
+        })}>
           <label>
             Simulate feed for user type: 
             <select {...register('userType')} value={selectedFeedUserType} onChange={(e) =>  setSelectedFeedUserType(e.target.value)} >
@@ -128,6 +141,7 @@ export default function Feed() {
               // https://stackoverflow.com/questions/62742379/apollo-3-pagination-with-field-policies
               fetchMore({
                 variables: {
+                  userType: currentFeedUserType,
                   offset: feed.length // feed length updated from apollo cache. offset state just used for uniq keys now
                 }
               })
