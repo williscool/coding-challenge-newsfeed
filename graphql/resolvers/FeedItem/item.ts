@@ -8,7 +8,6 @@ import {user, project, announcement} from "../Query"
 
 // then drop down to show diff users types
 
-
 // then we shouwl all the parts of the feed items in the ui
 
 // https://stackoverflow.com/a/48241313/511710
@@ -41,8 +40,6 @@ export default async function feed_item(feed_item_row: FeedItemsRow): Promise<It
   if (!item) {
     throw new Error(`feed_item type: ${feed_item_row.entity_type} with id: ${feed_item_row.entity_id} not found`)
   }
-
-  //TODO: put soemthing on the item object so that the __resolveType thing can sort this out
 
   return item;
 }

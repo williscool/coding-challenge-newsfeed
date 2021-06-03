@@ -4,11 +4,9 @@ import {useQuery, gql} from '@apollo/client'
 
 import InfiniteScroll from "react-infinite-scroll-component";
 
-const OFFSET_INCREMENT = 10;
-
 const FEED_QUERY = gql`
-  query feed($offset: Int!) {
-    feed(offset: $offset) {
+  query feed($offset: Int, $limit: Int) {
+    feed(offset: $offset, limit: $limit) {
       entity_id
       entity_type
       fellowship
@@ -54,20 +52,17 @@ type FeedItem = {
 
 type feedStateType = {
   offset: number
-  allItems: FeedItem[]
+  hasMore: boolean
 }
 
 export default function Feed() {
 
-  const [feedState, setFeedState] = useState<feedStateType>({offset:0, allItems: [] });
+  const [feedState, setFeedState] = useState<feedStateType>({offset:0, hasMore: true});
 
-  const {offset, allItems} = feedState;
+  const {offset, hasMore} = feedState;
 
   const {data, error, loading, fetchMore} = useQuery<QueryData, QueryVars>(
     FEED_QUERY,
-    {
-      variables: {offset},
-    }
   )
   const feed = data?.feed;
 
@@ -75,41 +70,41 @@ export default function Feed() {
     return null
   }
 
-  allItems.concat(feed);
-
   return (
     <>
-      {feed.map(p => (
+      {
         <InfiniteScroll
-          dataLength={allItems.length}
-          next={()=>{
-
+          dataLength={feed.length}
+          next={()=>
+              // https://stackoverflow.com/questions/62742379/apollo-3-pagination-with-field-policies
               fetchMore({
                 variables: {
-                  offset
-                },
+                  offset: feed.length // feed length updated from apollo cache. offset state just used for uniq keys now
+                }
               })
 
-              setFeedState({offset: offset + OFFSET_INCREMENT, allItems})
-            } 
+              .then((fetchMoreResult) =>{
+                console.log(fetchMoreResult)
+                // https://www.apollographql.com/docs/react/pagination/offset-based/#using-with-a-paginated-read-function
+                setFeedState({offset: offset + fetchMoreResult.data.feed.length, hasMore: fetchMoreResult.data.feed.length !== 0 })
+              })
           }
           endMessage={
             <p style={{ textAlign: 'center' }}>
               <b>Yay! You have seen it all</b>
             </p>
           }
-          hasMore={feed.length === 0}
+          hasMore={hasMore}
           loader={<h4>Loading...</h4>}
           >
-          {feed.map((feedItem) => (
-
-            <Card key={`${feedItem.entity_id}-${feedItem.entity_type}`}>
-              <p> {feedItem.entity_type} </p>
-            </Card>
-
-          ))}
+          {feed.concat(feed).map((feedItem) => {
+            const key = `offset-${offset}-${feedItem.entity_id}-${feedItem.entity_type}`;
+            return <Card key={key}>
+                     <p key={key}> {feedItem.entity_type} </p>
+                  </Card>
+          })}
         </InfiniteScroll>
-      ))}
+      }
     </>
   )
 }
