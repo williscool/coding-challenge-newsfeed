@@ -37,6 +37,7 @@ const FEED_QUERY = gql`
           description
           icon_url
           users {
+            id
             name
           }
         }
@@ -46,6 +47,7 @@ const FEED_QUERY = gql`
           fellowship
           avatar_url
           projects {
+            id
             name
           }
         }

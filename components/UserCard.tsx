@@ -10,7 +10,6 @@ type Props = {
 }
 
 
-
 export default function UserCard({user}: Props) {
   return (
     <Card>
