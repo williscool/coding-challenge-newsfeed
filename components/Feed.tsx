@@ -100,7 +100,7 @@ export default function Feed() {
   const {offset, hasMore} = feedState;
 
   const {data, error, loading, refetch, fetchMore, networkStatus} = useQuery<QueryData, QueryVars>(
-    FEED_QUERY, {variables: {offset, userType: currentFeedUserType}, }
+    FEED_QUERY, {variables: {offset, userType: currentFeedUserType}, fetchPolicy: 'cache-and-network' }
   )
   const feed = data?.feed;
 
@@ -114,11 +114,12 @@ export default function Feed() {
         <form onSubmit={handleSubmit((data) => {
           console.log(data)                                                          
           debugger
-          resetCaches()
           refetch({ 
               userType: data.userType,
               offset: data.length // feed length updated from apollo cache. offset state just used for uniq keys now
           }).then(() => {
+            // NOTE: you would want to add the feed type to the data model irl ... this just updates it for subsequet queires
+            // it causese an uncessary extra render
             setCurrentFeedUserType(data.userType)
           })
         })}>
@@ -145,7 +146,6 @@ export default function Feed() {
                   offset: feed.length // feed length updated from apollo cache. offset state just used for uniq keys now
                 }
               })
-
               .then((fetchMoreResult) =>{
                 console.log(fetchMoreResult)
                 // https://www.apollographql.com/docs/react/pagination/offset-based/#using-with-a-paginated-read-function
