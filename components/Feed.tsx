@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Card from './Card'
 import UserCard from 'components/UserCard'
+import ProjectCard from 'components/ProjectCard'
 import {useQuery, gql, resetCaches, NetworkStatus } from '@apollo/client'
 import {User, Project, Announcement} from '../types'
 
@@ -176,7 +177,11 @@ export default function Feed() {
             if(feedItem.entity_type === "user"){
               retComp = <UserCard user={feedItem.item as User} />
             }
-            
+
+            if(feedItem.entity_type === "project"){
+              retComp = <ProjectCard project={feedItem.item as Project} />
+            }
+
             return retComp;
           })}
         </InfiniteScroll>
