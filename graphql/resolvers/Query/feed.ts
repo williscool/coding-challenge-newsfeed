@@ -39,7 +39,7 @@ export default async function feed(parent: unknown, {limit = LIMIT, offset = 0, 
     feed_items = await db.getAll(
       `SELECT id as entity_id, "announcement" as entity_type, fellowship, created_ts FROM announcements WHERE fellowship = 'founders' OR fellowship = 'all'
       UNION ALL
-      SELECT id as entity_id, "user" as entity_type, fellowship, created_ts FROM users WHERE fellowship = 'founders'
+      SELECT id as entity_id, "user" as entity_type, fellowship, created_ts FROM users WHERE fellowship = 'founders' OR fellowship = 'angels'
       UNION ALL
       SELECT id as entity_id, "project" as entity_type, "angels-founders" as fellowship, created_ts FROM projects
       ORDER BY created_ts DESC LIMIT ? OFFSET ?;
@@ -52,7 +52,7 @@ export default async function feed(parent: unknown, {limit = LIMIT, offset = 0, 
     feed_items = await db.getAll(
       `SELECT id as entity_id, "announcement" as entity_type, fellowship, created_ts FROM announcements WHERE fellowship = 'angel' OR fellowship = 'all'
       UNION ALL
-      SELECT id as entity_id, "user" as entity_type, fellowship, created_ts FROM users WHERE fellowship = 'angel'
+      SELECT id as entity_id, "user" as entity_type, fellowship, created_ts FROM users WHERE fellowship = 'angel' or fellowship = 'founders'
       UNION ALL
       SELECT id as entity_id, "project" as entity_type, "angels-founders" as fellowship, created_ts FROM projects
       ORDER BY created_ts DESC LIMIT ? OFFSET ?;
