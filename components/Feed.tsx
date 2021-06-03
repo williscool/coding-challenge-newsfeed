@@ -70,6 +70,7 @@ export default function Feed() {
     return null
   }
 
+  debugger
   return (
     <>
       {
@@ -97,7 +98,7 @@ export default function Feed() {
           hasMore={hasMore}
           loader={<h4>Loading...</h4>}
           >
-          {feed.concat(feed).map((feedItem) => {
+          {feed.map((feedItem) => {
             const key = `offset-${offset}-${feedItem.entity_id}-${feedItem.entity_type}`;
             return <Card key={key}>
                      <p key={key}> {feedItem.entity_type} </p>
