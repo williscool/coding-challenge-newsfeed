@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import Card from './Card'
+import UserCard from 'components/UserCard'
 import {useQuery, gql, resetCaches, NetworkStatus } from '@apollo/client'
+import {User, Project, Announcement} from '../types'
 
 import InfiniteScroll from "react-infinite-scroll-component";
 import Loader from 'react-loader';
@@ -40,6 +42,9 @@ const FEED_QUERY = gql`
           bio
           fellowship
           avatar_url
+          projects {
+            name
+          }
         }
       }
     }
@@ -60,6 +65,7 @@ type FeedItem = {
   entity_type: "announcement" | "project" | "user";
   fellowship: "founders" | "angels" | "writers" | "angels-founders";
   created_ts: Date;
+  item: User | Project | Announcement
 }
 
 type feedStateType = {
@@ -162,9 +168,16 @@ export default function Feed() {
           >
           {feed.map((feedItem) => {
             const key = `offset-${offset}-${feedItem.entity_id}-${feedItem.entity_type}`;
-            return <Card key={key}>
-                     <p key={key}> {feedItem.entity_type} </p>
-                  </Card>
+
+            let retComp = <Card key={key}>
+              <p key={key}> {feedItem.entity_type} </p>
+            </Card>
+
+            if(feedItem.entity_type === "user"){
+              retComp = <UserCard user={feedItem.item as User} />
+            }
+            
+            return retComp;
           })}
         </InfiniteScroll>
     </>
