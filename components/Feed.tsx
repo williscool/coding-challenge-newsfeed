@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Link from 'next/link'
 import Card from './Card'
 import UserCard from 'components/UserCard'
 import ProjectCard from 'components/ProjectCard'
@@ -11,7 +12,6 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import Loader from 'react-loader';
 
 import Skeleton from 'react-loading-skeleton';
-import { useForm } from 'react-hook-form';
 
 const ADMIN_USER = 'admin';
 const ANGEL_USER = 'angel';
@@ -79,7 +79,6 @@ type FeedItem = {
 type feedStateType = {
   offset: number
   hasMore: boolean
-  currentFeedUserType: string
 }
 
 const loaderOptions = {
@@ -104,66 +103,51 @@ const loaderOptions = {
   position: 'fixed'
 };
 
+type Props = {
+  userType: string
+}
 
-export default function Feed() {
+export default function Feed({userType}: Props) {
 
-  const { handleSubmit, register } = useForm();
-  const [feedState, setFeedState] = useState<feedStateType>({offset:0, hasMore: true, currentFeedUserType: ADMIN_USER});
-  const [selectedFeedUserType, setSelectedFeedUserType] = useState(ADMIN_USER);
+  const [feedState, setFeedState] = useState<feedStateType>({offset:0, hasMore: true});
 
-  const {offset, hasMore, currentFeedUserType} = feedState;
+  const {offset, hasMore} = feedState;
 
-  const {data, error, loading, refetch, fetchMore, networkStatus} = useQuery<QueryData, QueryVars>(
-    FEED_QUERY, {variables: {offset, userType: currentFeedUserType}, fetchPolicy: 'cache-and-network' }
+  const {data, error, loading, fetchMore } = useQuery<QueryData, QueryVars>(
+    FEED_QUERY, {variables: {offset, userType } } // irl use cache-first but hard to work with user type change
   )
   const feed = data?.feed;
 
-  if (!feed || loading || error || networkStatus === NetworkStatus.refetch) {
-    return <Skeleton count={7} height={200} />
+  if (!feed || loading || error) {
+    return <Skeleton count={7} width={300} height={200} />
   }
 
-  debugger
   return (
     <>
-        <form onSubmit={handleSubmit((data) => {
-          console.log(data)                                                          
-          debugger
-          refetch({ 
-              userType: data.userType,
-              offset: data.length // feed length updated from apollo cache. offset state just used for uniq keys now
-          }).then(() => {
-            // NOTE: you would want to add the feed type to the data model irl ... this just updates it for subsequet queires
-            // it causese an uncessary extra render
-            setFeedState({offset: 0, hasMore: true, currentFeedUserType: data.userType })
-          })
-        })}>
-          <label>
-            Simulate feed for user type: 
-            <select {...register('userType')} value={selectedFeedUserType} onChange={(e) =>  setSelectedFeedUserType(e.target.value)} >
-              {USER_TYPES.map((uType) => {
-                return <option value={uType} key={uType}>
-                        {uType}
-                      </option>
-              })}
-            </select>
-          </label>
-
-          <input type="submit" value="Submit" />
-        </form>
+        
+      <span> Check out different user type feeds </span>
+      <ul>
+        {USER_TYPES.map((uType) => {
+          return <li key={uType}> 
+                    User Type: <Link key={uType} href={{pathname: '/', query: {userType: uType}}}>{uType}</Link> 
+                 </li> 
+        })}
+      </ul>
+        
         <InfiniteScroll
           dataLength={feed.length}
           next={()=>
               // https://stackoverflow.com/questions/62742379/apollo-3-pagination-with-field-policies
               fetchMore({
                 variables: {
-                  userType: currentFeedUserType,
+                  userType,
                   offset: feed.length // feed length updated from apollo cache. offset state just used for uniq keys now
                 }
               })
               .then((fetchMoreResult) =>{
                 console.log(fetchMoreResult)
                 // https://www.apollographql.com/docs/react/pagination/offset-based/#using-with-a-paginated-read-function
-                setFeedState({offset: offset + fetchMoreResult.data.feed.length, hasMore: fetchMoreResult.data.feed.length !== 0 , currentFeedUserType})
+                setFeedState({offset: offset + fetchMoreResult.data.feed.length, hasMore: fetchMoreResult.data.feed.length !== 0})
               })
           }
           endMessage={

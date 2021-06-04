@@ -1,9 +1,22 @@
+import {useEffect} from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import Layout from 'components/Layout'
 import Feed from 'components/Feed'
+import {useRouter} from 'next/router'
+
 
 export default function Home() {
+
+  const {query, events, reload} = useRouter()
+  const {userType} = query
+
+  // NOTE: this is a hack to make sure we reload the pagee each time!
+  // to make sure pagination of feed works when changing usertype
+  useEffect(() => {
+    events.on('routeChangeStart', (url) => window.location.replace(url) )
+  }, [])
+
   return (
     <Layout>
       <Head>
@@ -17,7 +30,7 @@ export default function Home() {
         <li>User <Link href="/users/11">Cai Burris</Link></li>
       </ul>
 
-      <Feed/>
+      <Feed userType={(userType || 'admin') as string}/>
     </Layout>
   )
 }
