@@ -153,6 +153,7 @@ export default function Feed({userType}: Props) {
           <input type="submit" value="Submit" />
         </form>
         
+        <p>Current feed user type: {userType}</p>
         <InfiniteScroll
           dataLength={feed.length}
           next={()=>
