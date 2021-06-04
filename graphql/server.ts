@@ -10,6 +10,7 @@ const typeDefs = gql`
     description: String!
     icon_url: String!
     users: [User!]!
+    created_ts: String
   }
 
   type User {
@@ -19,6 +20,7 @@ const typeDefs = gql`
     avatar_url: String!
     fellowship: String!
     projects: [Project!]!
+    created_ts: String
   }
 
   type Announcement {
@@ -26,6 +28,7 @@ const typeDefs = gql`
     title: String!
     body: String!
     fellowship: String!
+    created_ts: String
   }
 
   union FeedItemInfo = User | Project | Announcement

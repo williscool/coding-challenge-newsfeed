@@ -5,6 +5,7 @@ export type Announcement = {
     fellowship: "founders" | "angels" | "writers" | "all";
     avatar_url: string;
     projects: Project[];
+    created_ts: string;
 }
 
 export type User = {
@@ -13,6 +14,7 @@ export type User = {
     bio: string;
     fellowship: "founders" | "angels" | "writers";
     avatar_url: string;
+    created_ts: string;
     projects: Project[];
 }
 
@@ -22,4 +24,5 @@ export type Project = {
     description: string;
     icon_url: string;
     users: User[];
+    created_ts: string;
   }

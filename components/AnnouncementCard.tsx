@@ -14,6 +14,8 @@ export default function AnnouncementCard({announcement}: Props) {
       <Columns>
         <ColumnRight>
           <h2>{announcement.title}</h2>
+          <p>{!!announcement.created_ts && announcement.created_ts}</p>
+          <p>Fellowship: {announcement.fellowship}</p>
           <Markdown>{announcement.body}</Markdown>
         </ColumnRight>
       </Columns>

@@ -16,6 +16,7 @@ export default function UserCard({user}: Props) {
       <Columns>
         <ColumnLeft>
           <Avatar src={user.avatar_url}/>
+          {!!user.created_ts && user.created_ts}
         </ColumnLeft>
         <ColumnRight>
           <h2>{user.name}</h2>

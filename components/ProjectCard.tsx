@@ -3,22 +3,10 @@ import styled from 'styled-components'
 import Card from './Card'
 import Markdown from './Markdown'
 
+import {User, Project} from '../types'
+
 type Props = {
   project: Project;
-}
-
-type Project = {
-  id: number;
-  name: string;
-  description: string;
-  icon_url: string;
-  users: User[];
-}
-
-type User = {
-  id: number;
-  name: string;
-  avatar_url: string;
 }
 
 export default function ProjectCard({project}: Props) {
@@ -27,6 +15,7 @@ export default function ProjectCard({project}: Props) {
       <Columns>
         <ColumnLeft>
           <Icon src={project.icon_url}/>
+          {!!project.created_ts && project.created_ts}
         </ColumnLeft>
         <ColumnRight>
           <h2>{project.name}</h2>

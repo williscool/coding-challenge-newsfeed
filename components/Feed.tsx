@@ -31,11 +31,13 @@ const FEED_QUERY = gql`
           title
           body
           fellowship
+          created_ts
         }
         ... on Project{
           name
           description
           icon_url
+          created_ts
           users {
             id
             name
@@ -46,6 +48,7 @@ const FEED_QUERY = gql`
           bio
           fellowship
           avatar_url
+          created_ts
           projects {
             id
             name
