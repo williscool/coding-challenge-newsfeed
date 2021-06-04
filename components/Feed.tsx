@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/router'
+
 import Link from 'next/link'
 import Card from './Card'
 import UserCard from 'components/UserCard'
@@ -109,7 +112,10 @@ type Props = {
 
 export default function Feed({userType}: Props) {
 
+  const { handleSubmit, register } = useForm();
+  const router = useRouter()
   const [feedState, setFeedState] = useState<feedStateType>({offset:0, hasMore: true});
+  const [selectedFeedUserType, setSelectedFeedUserType] = useState(userType);
 
   const {offset, hasMore} = feedState;
 
@@ -124,15 +130,28 @@ export default function Feed({userType}: Props) {
 
   return (
     <>
-        
-      <span> Check out different user type feeds </span>
-      <ul>
-        {USER_TYPES.map((uType) => {
-          return <li key={uType}> 
-                    User Type: <Link key={uType} href={{pathname: '/', query: {userType: uType}}}>{uType}</Link> 
-                 </li> 
-        })}
-      </ul>
+        <form onSubmit={handleSubmit((data) => {
+          console.log(data)
+
+          router.push({
+            pathname: '/',
+            query: { userType: data.userType },
+          }).then(()=> router.reload())
+          
+        })}>
+          <label>
+            Simulate feed for user type:
+            <select {...register('userType')} value={selectedFeedUserType} onChange={(e) =>  setSelectedFeedUserType(e.target.value)} >
+              {USER_TYPES.map((uType) => {
+                return <option value={uType} key={uType}>
+                        {uType}
+                      </option>
+              })}
+            </select>
+          </label>
+
+          <input type="submit" value="Submit" />
+        </form>
         
         <InfiniteScroll
           dataLength={feed.length}
