@@ -70,7 +70,7 @@ describe("Query feed resolver", () => {
 
       const result = await server.executeOperation({
         query: FEED_QUERY,
-        variables: { userType: 'angel' }
+        variables: { limit:100, userType: 'angel' }
       });
 
       const feed = result.data?.feed
@@ -86,7 +86,7 @@ describe("Query feed resolver", () => {
 
       const result = await server.executeOperation({
         query: FEED_QUERY,
-        variables:  { userType: 'founder' }
+        variables:  { limit:100, userType: 'founder' }
       });
 
       const feed = result.data?.feed
@@ -101,7 +101,7 @@ describe("Query feed resolver", () => {
 
       const result = await server.executeOperation({
         query: FEED_QUERY,
-        variables:  { userType: 'writer' }
+        variables:  { limit:100, userType: 'writer' }
       });
 
       const feed = result.data?.feed

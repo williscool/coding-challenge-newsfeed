@@ -1,6 +1,6 @@
 import db, {FeedItemsRow} from '../../db'
 
-const LIMIT = 10;
+const DEFAULT_LIMIT = 10;
 
 type Args = {
   limit: number;
@@ -10,7 +10,7 @@ type Args = {
 
 // https://www.apollographql.com/docs/apollo-server/schema/unions-interfaces/
 
-export default async function feed(parent: unknown, {limit = LIMIT, offset = 0, userType = 'admin'}: Args): Promise<FeedItemsRow[]> { 
+export default async function feed(parent: unknown, {limit = DEFAULT_LIMIT, offset = 0, userType = 'admin'}: Args): Promise<FeedItemsRow[]> { 
   let feed_items: FeedItemsRow[] | undefined = undefined;
 
   // NOTE: default to admin ... irl would not want to make this query twice... but left like this for the compiler
