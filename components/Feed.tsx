@@ -23,7 +23,7 @@ const FOUNDER_USER = 'founder';
 
 const USER_TYPES = [ADMIN_USER, ANGEL_USER, WRITER_USER, FOUNDER_USER];
 
-const FEED_QUERY = gql`
+export const FEED_QUERY = gql`
   query feed($offset: Int, $limit: Int, $userType: String) {
     feed(offset: $offset, limit: $limit, userType: $userType) {
       entity_id
