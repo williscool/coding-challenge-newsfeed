@@ -1,0 +1,23 @@
+{
+    "env": {
+      "node": true,
+      "jest": true
+    },
+    "parser": "@typescript-eslint/parser",
+    "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "plugin:react/recommended" ],
+    "plugins": [ "react-hooks", "@typescript-eslint"],
+    "rules": {
+      "indent": ["error", 2],
+      "linebreak-style": ["error", "unix"],
+      "quotes": ["error", "single"],
+      "semi": ["error", "always"],
+      "max-len": ["error", 120, { "ignoreComments": true }],
+      "valid-jsdoc": ["error", { "requireReturn": false }],
+      "react-hooks/rules-of-hooks": "error", // Checks rules of Hooks
+      "react-hooks/exhaustive-deps": "warn", // Checks effect dependencies
+      "react/react-in-jsx-scope": "off",// https://stackoverflow.com/a/61160875/511710
+      "react/prop-types": "off" // dob't feel like being annoyed w/ this particular type system on this project
+  
+    }
+  }
+  
