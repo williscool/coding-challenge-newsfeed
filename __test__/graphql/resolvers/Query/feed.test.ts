@@ -9,8 +9,8 @@ import {server } from '../../../../graphql/server'
 // irl would fix this with 
 // https://stackoverflow.com/questions/40322788/how-to-overwrite-incorrect-typescript-type-definition-installed-via-types-packa/54840439
 export const FEED_QUERY = `
-  query feed($offset: Int, $limit: Int, $userType: String) {
-    feed(offset: $offset, limit: $limit, userType: $userType) {
+  query feed($offset: Int, $limit: Int, $userType: String, $before: String!) {
+    feed(offset: $offset, limit: $limit, userType: $userType, before: $before) {
       entity_id
       entity_type
       fellowship
@@ -52,7 +52,7 @@ describe("Query feed resolver", () => {
 
         const result = await server.executeOperation({
           query: FEED_QUERY,
-          variables: {  }
+          variables: { before: new Date(Date.now()).toISOString() }
         });
 
         expect(result.data?.feed).toBeTruthy()
@@ -70,7 +70,7 @@ describe("Query feed resolver", () => {
 
       const result = await server.executeOperation({
         query: FEED_QUERY,
-        variables: { limit:100, userType: 'angel' }
+        variables: { limit:100, userType: 'angel', before: new Date(Date.now()).toISOString() }
       });
 
       const feed = result.data?.feed
@@ -86,7 +86,7 @@ describe("Query feed resolver", () => {
 
       const result = await server.executeOperation({
         query: FEED_QUERY,
-        variables:  { limit:100, userType: 'founder' }
+        variables:  { limit:100, userType: 'founder', before: new Date(Date.now()).toISOString() }
       });
 
       const feed = result.data?.feed
@@ -101,7 +101,7 @@ describe("Query feed resolver", () => {
 
       const result = await server.executeOperation({
         query: FEED_QUERY,
-        variables:  { limit:100, userType: 'writer' }
+        variables:  { limit:100, userType: 'writer', before: new Date(Date.now()).toISOString() }
       });
 
       const feed = result.data?.feed

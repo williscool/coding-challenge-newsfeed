@@ -23,9 +23,11 @@ const FOUNDER_USER = 'founder';
 
 const USER_TYPES = [ADMIN_USER, ANGEL_USER, WRITER_USER, FOUNDER_USER];
 
+const loadTime = new Date(Date.now())
+
 export const FEED_QUERY = gql`
-  query feed($offset: Int, $limit: Int, $userType: String) {
-    feed(offset: $offset, limit: $limit, userType: $userType) {
+  query feed($offset: Int, $limit: Int, $userType: String, $before: String!) {
+    feed(offset: $offset, limit: $limit, userType: $userType, before: $before) {
       entity_id
       entity_type
       fellowship
@@ -69,6 +71,7 @@ type QueryData = {
 type QueryVars = {
   offset: number;
   userType: string;
+  before: string;
 }
 
 type FeedItem = {
@@ -120,7 +123,7 @@ export default function Feed({userType}: Props) {
   const {offset, hasMore} = feedState;
 
   const {data, error, loading, fetchMore } = useQuery<QueryData, QueryVars>(
-    FEED_QUERY, {variables: {offset, userType } } // irl use cache-first but hard to work with user type change
+    FEED_QUERY, {variables: {offset, userType, before: loadTime.toISOString() } } // irl use cache-first but hard to work with user type change
   )
   const feed = data?.feed;
 

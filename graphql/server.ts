@@ -44,7 +44,7 @@ const typeDefs = gql`
     project(id: Int!): Project!
     user(id: Int!): User!
     announcement(id: Int!): Announcement!
-    feed(offset: Int, limit: Int, userType: String): [FeedItem!]!
+    feed(offset: Int, limit: Int, userType: String, before: String!): [FeedItem!]!
   }
 `;
 
