@@ -189,15 +189,15 @@ export default function Feed({userType}: Props) {
             </Card>
 
             if(feedItem.entity_type === "user"){
-              retComp = <UserCard user={feedItem.item as User} />
+              retComp = <UserCard key={key} user={feedItem.item as User} />
             }
 
             if(feedItem.entity_type === "project"){
-              retComp = <ProjectCard project={feedItem.item as Project} />
+              retComp = <ProjectCard key={key} project={feedItem.item as Project} />
             }
 
             if(feedItem.entity_type === "announcement"){
-              retComp = <AnnouncementCard announcement={feedItem.item as Announcement} />
+              retComp = <AnnouncementCard key={key} announcement={feedItem.item as Announcement} />
             }
 
             return retComp;
